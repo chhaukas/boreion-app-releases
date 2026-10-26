@@ -4,8 +4,10 @@ from pathlib import Path
 import sys
 import unittest
 
-ROOT = Path(os.environ.get("BOREION_CENTRAL_TEMPLATE_ROOT", Path(__file__).resolve().parents[1]))
+BASE = Path(__file__).resolve().parents[1]
+ROOT = Path(os.environ.get("BOREION_CENTRAL_TEMPLATE_ROOT", BASE if (BASE / "scripts/central.py").exists() else BASE.parent / "templates/central-publisher"))
 sys.path.insert(0, str(ROOT / "scripts"))
+from central import Rejected
 spec = importlib.util.spec_from_file_location("reader_probe", ROOT / "scripts/check-access.py")
 probe = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(probe)
@@ -25,11 +27,11 @@ class ReaderProbeTests(unittest.TestCase):
         self.assertTrue(probe.check(self.api(), 12))
 
     def test_unknown_source_rejected(self):
-        with self.assertRaises(probe.require.__globals__["Rejected"]):
+        with self.assertRaises(Rejected):
             probe.check(self.api(source=False), 12)
 
     def test_foreign_owner_rejected(self):
-        with self.assertRaises(probe.require.__globals__["Rejected"]):
+        with self.assertRaises(Rejected):
             probe.check(self.api(owner=999), 12)
 
     def test_missing_workflow_reports_pending(self):

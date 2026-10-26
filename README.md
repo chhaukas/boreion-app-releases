@@ -111,3 +111,15 @@ Reell GitHub App-installasjon, kryssrepo-tilgang, GitHub-review-gate og produksj
 ## Observert kontohindring ved leveranse
 
 GitHub nektet å starte portalrepoets private CI-jobb med meldingen om mislykkede nylige betalinger eller for lav spending limit. Ingen runner/test ble startet der. Lokal portalverifikasjon er grønn, og offentlig sentral-CI kjører separat. Kontoeieren må kontrollere Settings → Billing & plans før private Android-bygg kan forventes å kjøre. Ingen betalingsinnstillinger er endret.
+
+## Kontrollert oppsett etter App-konfigurasjon
+
+Sentralens scan/publish/test-workflows og en separat `central-check-access.yml` ligger nå på main. App-ID 5477250 og den sentralt lagrede PEM-en er faktisk testet på GitHub: [reader-integrasjon](https://github.com/chhaukas/boreion-app-releases/actions/runs/40308611125) bekrefter godkjent privat kilde, eier, Actions-read og registrert build-only-workflow. Testen laster ikke ned eller publiserer APK, og viser ingen private navn eller nøkkelverdier. Den er begrenset til kontoeieren på sentral main.
+
+Kjør samme ufarlige kontroll med numerisk kilde-ID, aldri et privat reponavn i offentlig workflow-input:
+
+```sh
+gh workflow run central-check-access.yml --repo chhaukas/boreion-app-releases --ref main -f source_repository_id=NUMERISK_GODKJENT_ID
+```
+
+Førstekildens faktiske policy er klargjort privat med produksjon deaktivert. Denne øktens GitHub-integrasjon får 403 for Secrets-write og Administration-write. Sentral policy, environments og main-beskyttelse må derfor settes fra eierens egen autoriserte økt. Private source-bygg er også stoppet før runnerstart av GitHubs betaling/spending limit; det sier ingenting om hvorvidt signeringssecrets er konfigurert. Ingen produksjonsgodkjenning, secret-flytting eller release er utført.
