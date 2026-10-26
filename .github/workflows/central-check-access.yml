@@ -1,0 +1,35 @@
+name: Check central reader access
+on:
+  workflow_dispatch:
+    inputs:
+      source_repository_id:
+        description: Numeric ID of approved private source (no private repo name)
+        required: true
+permissions:
+  contents: read
+jobs:
+  probe:
+    if: github.repository == 'chhaukas/boreion-app-releases' && github.ref == 'refs/heads/main' && github.actor_id == '338504245'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Check configured App identity (public ID only)
+        env:
+          APP_ID: ${{ vars.BOREION_READER_APP_ID }}
+        run: test "$APP_ID" = 5477250
+      - uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+        id: reader
+        with:
+          app-id: ${{ vars.BOREION_READER_APP_ID }}
+          private-key: ${{ secrets.BOREION_READER_APP_PRIVATE_KEY }}
+          owner: chhaukas
+          permission-actions: read
+      - name: Read-only integration probe (no APK download or publishing)
+        env:
+          SOURCE_TOKEN: ${{ steps.reader.outputs.token }}
+          EXPECTED_SOURCE_ID: ${{ inputs.source_repository_id }}
+        run: python3 scripts/check-access.py
