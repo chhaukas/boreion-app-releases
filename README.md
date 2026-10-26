@@ -104,7 +104,7 @@ Kompromittert App-PEM gir bare lesing av Actions-data i utvalgte private repoer,
 
 ## Verifikasjon før aktivering
 
-Koden er testet lokalt med unit-/negative tester og checksum-verifiserte verktøy. En ekte lokal test-APK signert med en midlertidig testnøkkel ble kontrollert i den faktiske Docker-sandkassen; gyldig signatur ble akseptert, feil cert/package/version og etterfølgende filendring ble avvist. Testnøkkel og APK ble slettet, ingen testrelease ble publisert. Actionlint validerer workflow-syntaksen.
+[Offentlig GitHub-CI](https://github.com/chhaukas/boreion-app-releases/actions/runs/40304905581) bestod unit-/negative tester og reell Docker-/signaturtest. Koden er også testet lokalt med checksum-verifiserte verktøy. En ekte lokal test-APK signert med en midlertidig testnøkkel ble kontrollert i den faktiske Docker-sandkassen; gyldig signatur ble akseptert, feil cert/package/version og etterfølgende filendring ble avvist. Testnøkkel og APK ble slettet, ingen testrelease ble publisert. Actionlint validerer workflow-syntaksen.
 
 Reell GitHub App-installasjon, kryssrepo-tilgang, GitHub-review-gate og produksjonspublisering kan ikke bekreftes før kontoeieren utfører engangsstegene. Koden installerer eller flytter ingen produksjonshemmeligheter. Test først mot en eksplisitt godkjent ikke-produksjonskilde, uten å publisere test-APK som en reell app.
 
