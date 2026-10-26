@@ -107,3 +107,7 @@ Kompromittert App-PEM gir bare lesing av Actions-data i utvalgte private repoer,
 Koden er testet lokalt med unit-/negative tester og checksum-verifiserte verktøy. En ekte lokal test-APK signert med en midlertidig testnøkkel ble kontrollert i den faktiske Docker-sandkassen; gyldig signatur ble akseptert, feil cert/package/version og etterfølgende filendring ble avvist. Testnøkkel og APK ble slettet, ingen testrelease ble publisert. Actionlint validerer workflow-syntaksen.
 
 Reell GitHub App-installasjon, kryssrepo-tilgang, GitHub-review-gate og produksjonspublisering kan ikke bekreftes før kontoeieren utfører engangsstegene. Koden installerer eller flytter ingen produksjonshemmeligheter. Test først mot en eksplisitt godkjent ikke-produksjonskilde, uten å publisere test-APK som en reell app.
+
+## Observert kontohindring ved leveranse
+
+GitHub nektet å starte portalrepoets private CI-jobb med meldingen om mislykkede nylige betalinger eller for lav spending limit. Ingen runner/test ble startet der. Lokal portalverifikasjon er grønn, og offentlig sentral-CI kjører separat. Kontoeieren må kontrollere Settings → Billing & plans før private Android-bygg kan forventes å kjøre. Ingen betalingsinnstillinger er endret.

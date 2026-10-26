@@ -114,6 +114,10 @@ jobs:
           GH_TOKEN: ${{ steps.reader.outputs.token }}
         run: gh api --method DELETE /installation/token
       - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+        with:
+          # The legacy SDK package "tools" is no longer available.
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
       - run: sdkmanager "build-tools;35.0.0"
       - name: Verify provenance, signature, package, version and SHA; sanitize public bundle
         env:
