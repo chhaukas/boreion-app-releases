@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "appId": "my-tool",
+  "metadata": {
+    "name": "Min app",
+    "summary": "Beskriv appen.",
+    "description": "Offentlig beskrivelse uten interne lenker eller data.",
+    "publisher": "Boreion",
+    "category": "Verktøy",
+    "indexable": true,
+    "distribution": {
+      "public": false,
+      "signingCertificateSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
+}

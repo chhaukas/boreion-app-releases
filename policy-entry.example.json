@@ -1,0 +1,12 @@
+{
+  "repository": "chhaukas/REPLACE-PRIVATE-REPO",
+  "repositoryId": 0,
+  "ownerId": 0,
+  "workflowId": 0,
+  "workflowPath": ".github/workflows/boreion-build.yml",
+  "branch": "main",
+  "actorIds": [],
+  "certificateSha256": "REPLACE_WITH_EXISTING_CERTIFICATE_SHA256",
+  "androidPackage": "com.boreion.REPLACE",
+  "productionApproved": false
+}

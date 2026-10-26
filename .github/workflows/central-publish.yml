@@ -1,0 +1,157 @@
+name: Central Android publication
+run-name: Publish ${{ inputs.app_id }} / run ${{ inputs.source_run_id }}
+on:
+  workflow_dispatch:
+    inputs:
+      app_id:
+        description: Approved public app ID
+        required: true
+      source_run_id:
+        description: Successful private build run ID
+        required: true
+      channel:
+        type: choice
+        options: [beta, production]
+        required: true
+permissions: {}
+concurrency:
+  group: publish-${{ inputs.app_id }}-${{ inputs.source_run_id }}
+  cancel-in-progress: false
+jobs:
+  plan:
+    if: github.repository == 'chhaukas/boreion-app-releases' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      channel: ${{ steps.plan.outputs.channel }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Check closed policy, caller and production protection
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BOREION_SOURCE_POLICY: ${{ secrets.BOREION_SOURCE_POLICY }}
+          CENTRAL_ACTOR_ID: ${{ github.actor_id }}
+          CENTRAL_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          APP_ID: ${{ inputs.app_id }}
+          RUN_ID: ${{ inputs.source_run_id }}
+          CHANNEL: ${{ inputs.channel }}
+        run: python3 scripts/central.py plan --app "$APP_ID" --run "$RUN_ID" --channel "$CHANNEL"
+      - uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+        id: preflight-reader
+        with:
+          app-id: ${{ vars.BOREION_READER_APP_ID }}
+          private-key: ${{ secrets.BOREION_READER_APP_PRIVATE_KEY }}
+          owner: chhaukas
+          repositories: ${{ steps.plan.outputs.repositories }}
+          permission-actions: read
+      - name: Check private run provenance before requesting export approval
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_TOKEN: ${{ steps.preflight-reader.outputs.token }}
+          BOREION_SOURCE_POLICY: ${{ secrets.BOREION_SOURCE_POLICY }}
+          CENTRAL_ACTOR_ID: ${{ github.actor_id }}
+          CENTRAL_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          APP_ID: ${{ inputs.app_id }}
+          RUN_ID: ${{ inputs.source_run_id }}
+          CHANNEL: ${{ inputs.channel }}
+        run: python3 scripts/central.py preflight --app "$APP_ID" --run "$RUN_ID" --channel "$CHANNEL"
+  verify:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Approval occurs BEFORE private artifacts can cross into public Actions storage.
+    environment: ${{ needs.plan.outputs.channel == 'production' && 'publication-production' || 'publication-beta' }}
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Resolve approved source using central policy only
+        id: policy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BOREION_SOURCE_POLICY: ${{ secrets.BOREION_SOURCE_POLICY }}
+          CENTRAL_ACTOR_ID: ${{ github.actor_id }}
+          CENTRAL_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          APP_ID: ${{ inputs.app_id }}
+          RUN_ID: ${{ inputs.source_run_id }}
+          CHANNEL: ${{ inputs.channel }}
+        run: python3 scripts/central.py plan --app "$APP_ID" --run "$RUN_ID" --channel "$CHANNEL"
+      - uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+        id: reader
+        with:
+          # Explicit always() revocation below occurs BEFORE parsing private bytes.
+          skip-token-revoke: true
+          app-id: ${{ vars.BOREION_READER_APP_ID }}
+          private-key: ${{ secrets.BOREION_READER_APP_PRIVATE_KEY }}
+          owner: chhaukas
+          repositories: ${{ steps.policy.outputs.repositories }}
+          permission-actions: read
+      - name: Verify source run and fetch digest-bound private artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_TOKEN: ${{ steps.reader.outputs.token }}
+          BOREION_SOURCE_POLICY: ${{ secrets.BOREION_SOURCE_POLICY }}
+          CENTRAL_ACTOR_ID: ${{ github.actor_id }}
+          CENTRAL_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          APP_ID: ${{ inputs.app_id }}
+          RUN_ID: ${{ inputs.source_run_id }}
+          CHANNEL: ${{ inputs.channel }}
+        run: python3 scripts/central.py fetch --app "$APP_ID" --run "$RUN_ID" --channel "$CHANNEL"
+      - name: Revoke source-reading token before artifact inspection
+        if: always() && steps.reader.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.reader.outputs.token }}
+        run: gh api --method DELETE /installation/token
+      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+      - run: sdkmanager "build-tools;35.0.0"
+      - name: Verify provenance, signature, package, version and SHA; sanitize public bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BOREION_SOURCE_POLICY: ${{ secrets.BOREION_SOURCE_POLICY }}
+          CENTRAL_ACTOR_ID: ${{ github.actor_id }}
+          CENTRAL_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          APP_ID: ${{ inputs.app_id }}
+          RUN_ID: ${{ inputs.source_run_id }}
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          docker --host=unix:///var/run/docker.sock pull "$(cat verifier-image.txt)"
+          python3 scripts/central.py verify --app "$APP_ID" --run "$RUN_ID" --channel "$CHANNEL"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: verified-public-bundle
+          path: publish-bundle/
+          retention-days: 1
+          if-no-files-found: error
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    # No App PEM, source token or private source checkout in this job.
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Fetch only this central run's verified bundle and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BOREION_SOURCE_POLICY: ${{ secrets.BOREION_SOURCE_POLICY }}
+          CENTRAL_ACTOR_ID: ${{ github.actor_id }}
+          CENTRAL_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          APP_ID: ${{ inputs.app_id }}
+          CHANNEL: ${{ inputs.channel }}
+        run: python3 scripts/publish.py
