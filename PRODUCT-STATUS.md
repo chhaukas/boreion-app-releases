@@ -1,5 +1,13 @@
 # Produktstatus — sentral Boreion-publisering
 
+## Eiergodkjent manuell Titan-import
+
+Utgiveren har nå uttrykkelig bedt om publisering av vedlagte Titan-Diagnose-1.1.apk. Den faktiske, uendrede filen har Android versionName 1.1, versionCode 2, pakkenavn no.titan.diagnose, minimum API22 og korrekt eksisterende signeringssertifikat. SHA-256 er 43d5af830e95d3d0776ab9eed7c96b33dc310ea1fce5819f7552e85bd8c9489b (25223 bytes). Dette er en manuell godkjent import, ikke et nytt source-build eller en oppdiktet workflow-attestasjon.
+
+Draft 424163700/tag chhaukas-android-tredemolle/v1.1 er opprettet. Opplasting fra Codex til uploads.github.com ble avvist med 401, selv om REST/Git-data fungerer. Den eksplisitte engangsworkflowen import-titan-1-1.yml bruker derfor ekte sentralt GITHUB_TOKEN på GitHub-runneren. Bare eieren på main kan starte den, og kun nøyaktig pinnede APK-/metadata-bytes godtas. Read-only verifier kontrollerer hash/signatur/pakke/faktisk versjon i Docker-sandkasse før en separat writer-jobb henter samme runs digest-bundne bundle, verifiserer GitHub-asset-digests og publiserer bare dette ene tomme utkastet. Ingen App-PEM eller APK-parser finnes i writer-jobben. Ingen automatisk overskriving.
+
+Den automatiske source-policyen for fremtidige bygg forblir deaktivert og får ingen produksjonsgodkjenning fra denne enkeltfil-importen. Innstilling-/betalingshindrene i historikken gjelder fortsatt den automatiske flyten. Publiseringsresultat føres etter faktisk kjøring.
+
 ## Kontrollert oppsett 2026-10-26
 
 - Sentral scan/publish/tests og separat read-only App-probe er merget til main (PR #1). Ingen database eller annen infrastruktur er opprettet.

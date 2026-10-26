@@ -123,3 +123,7 @@ gh workflow run central-check-access.yml --repo chhaukas/boreion-app-releases --
 ```
 
 Førstekildens faktiske policy er klargjort privat med produksjon deaktivert. Denne øktens GitHub-integrasjon får 403 for Secrets-write og Administration-write. Sentral policy, environments og main-beskyttelse må derfor settes fra eierens egen autoriserte økt. Private source-bygg er også stoppet før runnerstart av GitHubs betaling/spending limit; det sier ingenting om hvorvidt signeringssecrets er konfigurert. Ingen produksjonsgodkjenning, secret-flytting eller release er utført.
+
+## Én eksplisitt godkjent manuell førstegangsimport
+
+Utgiveren ba særskilt om publisering av sin eksisterende Titan Diagnose 1.1-APK. `import-titan-1-1.yml` er begrenset til denne ene godkjente filens pinnede SHA/blob/sertifikat og dette ene utkastet. Den krever eierens manuelle workflow_dispatch på sentral main, skiller read-only APK-verifikasjon fra Contents-write-jobben og bruker ingen App-PEM. Ingen source-build-proveniens påstås. Dette aktiverer ikke automatiske kilder og omgår ikke fremtidige kilders policy/godkjenninger. Portalen støtter den opprinnelige Android versionName 1.1 uten å relabelere eller endre signert APK.
