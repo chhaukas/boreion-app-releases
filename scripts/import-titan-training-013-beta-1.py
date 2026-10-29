@@ -75,7 +75,7 @@ def publish(api):
     for asset in check['assets']:
         expected=APPROVED[asset['name']]
         require(asset['state']=='uploaded' and asset['size']==expected['size'] and asset['digest']=='sha256:'+expected['sha256'])
-    done=api.request(f'/repos/{REPO}/releases/{RELEASE_ID}','PATCH',{'draft':False})
+    done=api.request(f'/repos/{REPO}/releases/{RELEASE_ID}','PATCH',{'tag_name':TAG,'draft':False,'prerelease':True})
     require(done and done.get('draft') is False and done.get('prerelease') is True and done.get('tag_name')==TAG)
     print('Published owner-requested Titan Trening 0.13.0-beta.1 with verified GitHub asset digests.')
 
