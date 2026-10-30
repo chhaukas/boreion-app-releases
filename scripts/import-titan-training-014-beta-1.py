@@ -10,7 +10,7 @@ import shutil
 import sys
 import urllib.parse
 import urllib.request
-from central import API, REPO, NoRedirect, require, safe_extract, verify_apk
+from central import API, REPO, NoRedirect, require, safe_extract, verify_apk, Rejected
 
 RELEASE_ID = 429510178
 TAG = 'chhaukas-titan-trening/v0.14.0-beta.1'
@@ -49,6 +49,7 @@ def verify(api):
 
 
 def publish(api):
+    print('Publish preflight: load run-bound verified artifact')
     run_id = int(os.environ['GITHUB_RUN_ID'])
     artifacts = api.request(f'/repos/{REPO}/actions/runs/{run_id}/artifacts?per_page=100')
     matches = [a for a in artifacts.get('artifacts',[]) if a['name']=='verified-owner-approved-titan-training-014-beta-1' and not a['expired']]
@@ -56,14 +57,18 @@ def publish(api):
     a=matches[0]
     binding=a.get('workflow_run',{})
     require(binding.get('id')==run_id and binding.get('head_sha')==os.environ['GITHUB_SHA'] and binding.get('repository_id')==int(os.environ['GITHUB_REPOSITORY_ID']))
+    print('Publish preflight: download and digest-check verified artifact')
     api.download(f'/repos/{REPO}/actions/artifacts/{a["id"]}/zip','verified-import.zip',a.get('digest'))
+    print('Publish preflight: safe extraction and exact file binding')
     safe_extract('verified-import.zip','verified-import')
     manifest=files_valid('verified-import')
+    print('Publish preflight: exact empty draft and manifest')
     release=api.request(f'/repos/{REPO}/releases/{RELEASE_ID}')
     require(release and release.get('tag_name')==TAG and release.get('draft') is True and release.get('prerelease') is True)
     require(release.get('assets')==[], 'Draft is not empty; no automatic overwrite')
     blocks=re.findall(r'\[boreion-app\]([\s\S]*?)\[/boreion-app\]',release['body'])
     require(len(blocks)==1 and json.loads(blocks[0])==manifest)
+    print('Publish preflight passed; upload exact approved bytes')
     for name,expected in APPROVED.items():
         url=f'https://uploads.github.com/repos/{REPO}/releases/{RELEASE_ID}/assets?name='+urllib.parse.quote(name,safe='')
         req=urllib.request.Request(url,data=(Path('verified-import')/name).read_bytes(),method='POST',headers={'Authorization':'Bearer '+api.token,'Content-Type':'application/octet-stream','Accept':'application/vnd.github+json','User-Agent':'Boreion-approved-manual-import'})
@@ -87,6 +92,8 @@ if __name__ == '__main__':
         if sys.argv[1]=='verify': verify(api)
         elif sys.argv[1]=='publish': publish(api)
         else: raise ValueError('Unknown operation')
-    except Exception:
-        print('Approved manual import stopped; no automatic overwrite or cleanup.',file=sys.stderr)
+    except Exception as error:
+        # Rejected messages are fixed controller diagnostics; never print HTTP bodies or token values.
+        detail=str(error) if isinstance(error,Rejected) else type(error).__name__
+        print('Approved manual import stopped; no automatic overwrite or cleanup. '+detail,file=sys.stderr)
         sys.exit(1)
