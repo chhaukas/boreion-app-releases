@@ -1,4 +1,4 @@
-name: Import owner-approved Titan Trening 0.13.0-beta.3 (private test reports)
+name: Import owner-approved Titan Trening 0.13.0-beta.3 (one-button technical reports)
 on:
   workflow_dispatch:
 permissions: {}
