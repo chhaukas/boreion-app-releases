@@ -15,7 +15,7 @@ from central import API, REPO, NoRedirect, require, safe_extract, verify_apk
 RELEASE_ID = 429510178
 TAG = 'chhaukas-titan-trening/v0.14.0-beta.1'
 CERT = '1224fbfd595c3dfef8aafbda43f154fa0a7a7770c8130f2e1e640ca75fb6e030'
-APPROVED = {'boreion-app.json': {'blob': '67bf90562bc91181c7348e73a3f5f99e59b4380d', 'sha256': '09cfb43f52cee1ed3cf5ac630d147efc44ee79e8783e4305d8ad95d5612462e8', 'size': 2517}, 'chhaukas-titan-trening-0.14.0-beta.1.apk': {'blob': '2c5449970e048920eef86f99f22555d6dacfea51', 'sha256': 'e1e6d3c299c2992496b515431438ea60c7e89d692aa6483d97d8ed0c1d801f94', 'size': 2151932}, 'training-0141.png': {'blob': 'f8034e8e3106a4c3c9b7ae58acbd176e3198ac88', 'sha256': '91563ea97f2b85480da7d5680a16e5516abcb41fede94f7890785371206664da', 'size': 241959}, 'programs-0141.png': {'blob': 'd315f34dc08b6b3c215caa15d46e954c457282f2', 'sha256': '8713f9858d3db6f06cfbd8cdfea350548b9c458adbff04f339c5c72906445da9', 'size': 324005}}
+APPROVED = {'boreion-app.json': {'blob': 'a8ddb9066197c14943c258b9e4cdd85bfd3b616a', 'sha256': '797acfe7c186dfb04cf648e9e0ad61bd6f1380eacddffc168aed492ae180ff6f', 'size': 2517}, 'chhaukas-titan-trening-0.14.0-beta.1.apk': {'blob': '4bed9595954eb7e9681b1fc4a250aa72b5a3c570', 'sha256': '59079b00b23e7313535017d3855a821ff4b1771d11509522ff978e3bce6773ec', 'size': 2151979}, 'training-0141.png': {'blob': 'f8034e8e3106a4c3c9b7ae58acbd176e3198ac88', 'sha256': '91563ea97f2b85480da7d5680a16e5516abcb41fede94f7890785371206664da', 'size': 241959}, 'programs-0141.png': {'blob': 'd315f34dc08b6b3c215caa15d46e954c457282f2', 'sha256': '8713f9858d3db6f06cfbd8cdfea350548b9c458adbff04f339c5c72906445da9', 'size': 324005}}
 
 
 def files_valid(directory):
