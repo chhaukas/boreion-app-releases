@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "appId": "superfrog",
+  "version": "0.1.1-beta.3",
+  "metadata": {
+    "name": "Superfrog",
+    "sourceVisible": false,
+    "distribution": {
+      "public": true,
+      "signingCertificateSha256": "d078262a137f152143c5311ed882f82cff13652f9380d1f81058d43b2549f62d"
+    },
+    "description": "Det originale Amiga-eventyret i en Superfrog-app for Android 8 eller nyere, inkludert Android TV og 32-/64-bits ARM. Fullskjerm er standard; velg Vanlig (4:3) i innstillingene for bevarte proporsjoner. Skarp oppskalering for store skjermer og berøringskontroller som tilpasses mobilskjermen, kamerautskjæringer og navigasjonsfelt. Støtter Android sine USB/Bluetooth HID-kontrollere, med egen Amiga USB / Competition Pro-profil, lagret tilordning av knapper/retninger og kontrollertest. Menyene kan betjenes med TV-fjernkontroll eller joystick. Pause, gjenopptak og lagring er innebygd. Fysisk testing av Speedlink Competition Pro SL-6603-SBK på den enkelte TV-en gjenstår; Android må selv registrere USB-kontrolleren.",
+    "summary": "Superfrog på Android og Android TV med fullskjerm, valgfri 4:3 og tilpassede mobilkontroller.",
+    "category": "Spel",
+    "publisher": "Boreion",
+    "minAndroid": "Android 8+ · ARM32/64 · Android TV",
+    "indexable": true,
+    "icon": "icon.png",
+    "screenshots": [
+      "fullscreen-tv.png",
+      "normal-tv.png",
+      "fullscreen-phone.png",
+      "normal-phone.png",
+      "home.png",
+      "tv-settings.png"
+    ]
+  },
+  "apk": {
+    "assetName": "superfrog-0.1.1-beta.3.apk",
+    "sha256": "3cacf3fc3e0ae6829bb093fa2ea38d4458b3f381aab30750ffe38dc177508b0a"
+  }
+}
