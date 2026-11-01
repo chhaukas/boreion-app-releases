@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "appId": "superfrog",
+  "version": "0.1.1-beta.2",
+  "metadata": {
+    "name": "Superfrog",
+    "sourceVisible": false,
+    "distribution": {
+      "public": true,
+      "signingCertificateSha256": "d078262a137f152143c5311ed882f82cff13652f9380d1f81058d43b2549f62d"
+    },
+    "description": "Det originale Amiga-eventyret i en Superfrog-app for Android 8 eller nyere, inkludert Android TV og 32-/64-bits ARM. Støtter Android sine USB/Bluetooth HID-kontrollere, med egen Amiga USB / Competition Pro-profil, lagret tilordning av knapper/retninger og kontrollertest. Menyene kan betjenes med TV-fjernkontroll eller joystick. Stikka opp hopper og første joystickknapp skyter i Amiga-profilen. Pause, gjenopptak og lagring er innebygd. TV-visningen har skjermmarginer og skjuler berøringsknapper. Fysisk testing av Speedlink Competition Pro SL-6603-SBK på den enkelte TV-en gjenstår; Android må selv registrere USB-kontrolleren.",
+    "summary": "Superfrog på Android og Android TV med USB-joystick, håndkontroll og lagring.",
+    "category": "Spel",
+    "publisher": "Boreion",
+    "minAndroid": "Android 8+ · ARM32/64 · Android TV",
+    "indexable": true,
+    "icon": "icon.png",
+    "screenshots": [
+      "home.png",
+      "tv-settings.png",
+      "pause.png"
+    ]
+  },
+  "apk": {
+    "assetName": "superfrog-0.1.1-beta.2.apk",
+    "sha256": "9f3e5defaae6b37a158bf33c2b87c7309781fd25447f4b265e890baa9d6a95c3"
+  }
+}
