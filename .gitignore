@@ -1,9 +1,0 @@
-__pycache__/
-*.py[cod]
-.env*
-*.apk
-*.jks
-*.keystore
-*.pem
-.bundle/
-proof.json
