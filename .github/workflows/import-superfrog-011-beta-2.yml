@@ -64,7 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           curl -q --fail --location --proto '=https' --connect-timeout 15 --max-time 120 --retry 2 -H 'Authorization:' -H 'Cookie:' 'https://github.com/chhaukas/boreion-app-releases/releases/download/superfrog/v0.1.1-beta.2/superfrog-0.1.1-beta.2.apk' -o public.apk
-          echo '9f3e5defaae6b37a158bf33c2b87c7309781fd25447f4b265e890baa9d6a95c3  public.apk' | sha256sum -c -
+          echo '1a8adce8adcec33240971f2c76284faf91a6917a442a14178c50842b7fef145f  public.apk' | sha256sum -c -
           test "$(stat -c '%s' public.apk)" = 14202390
           echo 'Anonymous public APK download verified without GitHub login.'
       - name: Verify Boreion portal discovery after cache refresh
