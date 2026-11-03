@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "appId": "mosefot",
+  "version": "0.1.0-beta.2",
+  "metadata": {
+    "name": "Mosefot",
+    "summary": "Tidlig testversjon av et norsk plattformspill.",
+    "description": "Tidlig prototype av Bak fossen med ny illustrert bakgrunn. Figurer, plattformer og kontroller er fortsatt under utvikling; mobil og TV er ikke verifisert på enhet.",
+    "category": "Spill",
+    "publisher": "Boreion",
+    "minAndroid": "Android 7.0 eller nyere",
+    "sourceVisible": false,
+    "distribution": {
+      "public": true,
+      "signingCertificateSha256": "c2e542bbdb88a9a1a30cfe99b25162da01b4c7321feefc0b6805f7d7c95d16b8"
+    },
+    "icon": "icon.png"
+  },
+  "apk": {
+    "assetName": "mosefot-0.1.0-beta.2.apk",
+    "sha256": "d4fe6e452616cf87580ce95ccf37f3b098297d443470ec459699275d8d6d80dd"
+  }
+}
