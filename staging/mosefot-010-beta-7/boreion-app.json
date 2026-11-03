@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "appId": "mosefot",
+  "version": "0.1.0-beta.7",
+  "metadata": {
+    "name": "Mosefot",
+    "summary": "Ein tidleg, spelbar skattejakt på Sunnmøre.",
+    "description": "Følg gullsporet bak fossen, hjelp Bergny med slusa og finn kartplata. Ny demo med tydelegare historie, dialog og vatn. Mobil og TV er ikkje testa på fysisk eining.",
+    "category": "Spill",
+    "publisher": "Boreion",
+    "minAndroid": "Android 7.0 eller nyere",
+    "sourceVisible": false,
+    "distribution": {
+      "public": true,
+      "signingCertificateSha256": "c2e542bbdb88a9a1a30cfe99b25162da01b4c7321feefc0b6805f7d7c95d16b8"
+    },
+    "icon": "icon.png",
+    "screenshots": [
+      "h01-start.png",
+      "h01-bergny.png",
+      "h01-sluse.png"
+    ]
+  },
+  "apk": {
+    "assetName": "mosefot-0.1.0-beta.7.apk",
+    "sha256": "870c7c69b752256caaa51d47b7e87a677373fce83c9e65264b77d322e6085937"
+  }
+}
